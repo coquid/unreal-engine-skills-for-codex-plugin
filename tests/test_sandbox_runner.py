@@ -16,7 +16,8 @@ class SandboxOwnershipTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
-        base = Path(self.temporary.name)
+        # The launcher records resolved paths even when TEMP uses a Windows short name.
+        base = Path(self.temporary.name).resolve()
         self.editor = base / "Engine/Binaries/Win64/UnrealEditor.exe"
         self.editor.parent.mkdir(parents=True)
         self.editor.touch()

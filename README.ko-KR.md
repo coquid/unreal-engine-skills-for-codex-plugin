@@ -1,12 +1,10 @@
-# AngelScript Unreal Engine Skills for Codex
+# Unreal Engine MCP Skills for Codex
 
 [English](README.md)
 
-> 영문 원문이 유지보수 기준이며, 번역 기준 커밋은 `ae6b0c5886db4ea3ca1800b444cfdcd960c8d8e0`입니다.
-
 [Epic Games의 Unreal Engine 스킬](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)을 Codex에 맞게 조정한 커뮤니티 프로젝트입니다.
 [Idris173의 고정된 Codex 포팅 버전](https://github.com/Idris173/unreal-engine-skills-for-codex-plugin/commit/a6c25ac96cea4cdfb93029e31423efd109d90895)을 바탕으로
-범용 AngelScript 스킬 세 개를 추가했습니다. 포팅된 UE 스킬 디렉터리 세 개는 해당 커밋의 상태를 그대로 유지합니다.
+UE 스킬 세 개와 에디터 연결 도구를 제공합니다.
 Epic Games나 OpenAI의 공식 배포판이 아닙니다. 원본 MIT 저작권 고지와 Git 이력을 보존합니다.
 
 이 플러그인은 Codex가 **Unreal Engine의 공식 MCP 서버와 ToolsetRegistry**를 사용하는 방법을 안내합니다.
@@ -17,15 +15,15 @@ Unreal Engine, 엔진 측 플러그인, 대체 MCP 서버는 포함하지 않습
 | `unreal-mcp` | 실행 중인 Unreal Editor 연결·조회·조작 및 연결 문제 진단 |
 | `create-toolset` | ToolsetRegistry에 등록되는 C++/Python 도구 작성 및 확장 |
 | `unreal-skill` | Unreal 에디터 내부 Agent Skill 작성(Python 클래스 또는 UAsset) |
-| `angelscript-in-unreal` | 실제 AngelScript 바인딩 탐색 및 안전한 UE 게임플레이 구현 |
-| `as-integration-tests` | 대상 프로젝트의 테스트 실행 환경을 사용한 월드/PIE/latent AngelScript 테스트 설계 |
-| `emmsui` | 설치된 EmmsUI 플러그인을 사용한 AngelScript 디버그/에디터 UI 구현 및 검증 |
+
+## 통합판 v0.1.0에서 이전
+
+기존 `angelscript-unreal-engine-skills-for-codex@angelscript-unreal-engine-skills-for-codex` 설치를 제거하고 프로젝트별 설정에서 해당 활성화 항목을 정리하세요. 에디터 MCP 연결은 유지합니다. 이 포크의 새 ID는 `unreal-engine-skills-for-codex`입니다. 스크립팅 스킬은 독립 [UE AngelScript 플러그인](https://github.com/coquid/ue-angelscript-skills-for-codex-plugins)에서 설치하세요.
 
 ## 요구 사항
 
 - Skills와 MCP를 지원하는 로컬 Codex 클라이언트. 마켓플레이스 설치에는 플러그인 지원도 필요합니다.
 - `ModelContextProtocol`, `ToolsetRegistry`와 작업에 필요한 개별 툴셋 플러그인이 포함된 엔진.
-- AngelScript 스킬에는 호환되는 AngelScript 엔진 포크가 필요하며, EmmsUI 안내를 따르려면 해당 별도 플러그인이 필요합니다.
 - 실행 중인 에디터를 조작하려면 에디터와 MCP 서버가 실행 중이어야 합니다.
 - 선택적 설정 도우미와 개발 검증에는 Python **3.11+**가 필요합니다. MCP를 수동으로 설정할 때는 Python이 필요하지 않습니다.
 
@@ -42,20 +40,20 @@ Unreal Engine, 엔진 측 플러그인, 대체 MCP 서버는 포함하지 않습
 패키지 허용 목록으로 ZIP을 만든 다음, 비어 있는 새 배포 디렉터리에 압축을 푸세요.
 
 ```powershell
-$pluginRepo = 'C:\Plugins\angelscript-unreal-engine-skills-for-codex-plugin'
+$pluginRepo = 'C:\Plugins\unreal-engine-skills-for-codex-plugin'
 $packagePython = "$pluginRepo\.venv\Scripts\python.exe"
 # Prepare this isolated development environment once if it does not exist.
 python -m venv "$pluginRepo\.venv"
 & $packagePython -m pip install -r "$pluginRepo\requirements-dev.txt"
 & $packagePython "$pluginRepo\scripts\validate_plugin.py"
 & $packagePython "$pluginRepo\scripts\package_plugin.py"
-$packageZip = "$pluginRepo\dist\angelscript-unreal-engine-skills-for-codex-0.1.0.zip"
-$distributionRoot = "$pluginRepo\dist\local-plugin-0.1.0-build1"
+$packageZip = "$pluginRepo\dist\unreal-engine-skills-for-codex-0.2.0.zip"
+$distributionRoot = "$pluginRepo\dist\local-plugin-0.2.0-build1"
 if (Test-Path -LiteralPath $distributionRoot) { throw 'Choose a new distribution directory; do not merge into an old copy.' }
 Expand-Archive -LiteralPath $packageZip -DestinationPath $distributionRoot
 ```
 
-패키지를 업데이트할 때마다 새로운 `local-plugin-<version-or-build>` 디렉터리를 사용하세요. ZIP에는 스킬 여섯 개,
+패키지를 업데이트할 때마다 새로운 `local-plugin-<version-or-build>` 디렉터리를 사용하세요. ZIP에는 스킬 세 개,
 매니페스트, 문서, 런타임 도우미가 포함되며, 버전 관리 내부 파일, 가상환경, 테스트, 외부 UE 프로젝트 의존성은 제외됩니다.
 셸의 작업 디렉터리는 워크스페이스 지침에서 요구하는 위치를 유지하세요.
 
@@ -63,11 +61,11 @@ Expand-Archive -LiteralPath $packageZip -DestinationPath $distributionRoot
 `source`는 개발 체크아웃이 아니라 압축을 푼 배포본을 가리켜야 합니다. 포함된 카탈로그는 `./`를 사용하므로 배포본 루트 안에 머뭅니다.
 
 ```toml
-[marketplaces.angelscript-unreal-engine-skills-for-codex]
+[marketplaces.unreal-engine-skills-for-codex]
 source_type = "local"
-source = 'C:\Plugins\angelscript-unreal-engine-skills-for-codex-plugin\dist\local-plugin-0.1.0-build1'
+source = 'C:\Plugins\unreal-engine-skills-for-codex-plugin\dist\local-plugin-0.2.0-build1'
 
-[plugins."angelscript-unreal-engine-skills-for-codex@angelscript-unreal-engine-skills-for-codex"]
+[plugins."unreal-engine-skills-for-codex@unreal-engine-skills-for-codex"]
 enabled = true
 
 [mcp_servers.unreal-mcp]
@@ -80,11 +78,11 @@ Codex는 원본 디렉터리가 아니라 설치된 캐시 복사본을 불러�
 설치 전에 설정 및 신뢰 상태가 인식되지 않는 문제를 해결하세요. 빈 목록을 검증 통과로 취급하지 마세요.
 
 ```sh
-codex plugin list --marketplace angelscript-unreal-engine-skills-for-codex --json
-codex plugin add angelscript-unreal-engine-skills-for-codex@angelscript-unreal-engine-skills-for-codex --json
+codex plugin list --marketplace unreal-engine-skills-for-codex --json
+codex plugin add unreal-engine-skills-for-codex@unreal-engine-skills-for-codex --json
 ```
 
-데스크톱의 네이티브 UI/API 설치도 같은 설치 작업입니다. 데스크톱 마켓플레이스의 표시 이름은 **AngelScript Unreal Codex**입니다.
+데스크톱의 네이티브 UI/API 설치도 같은 설치 작업입니다. 데스크톱 마켓플레이스의 표시 이름은 **Unreal Engine MCP Skills**입니다.
 공식 설치 프로그램과 UI는 프로젝트에서 이미 플러그인을 활성화했더라도 사용자 수준의 활성화 설정을 쓸 수 있습니다.
 워크스페이스 지침이 요구한다면 최초 사용자 설정 쓰기에 대한 승인을 받으세요. 대상 프로젝트에서만 활성화하려면
 설치 후 `~/.codex/config.toml`에 있는 이 플러그인의 사용자 항목을 `enabled = false`로 설정하고,
@@ -92,7 +90,7 @@ codex plugin add angelscript-unreal-engine-skills-for-codex@angelscript-unreal-e
 
 ```toml
 # User config: disabled by default; the target project overrides this to true.
-[plugins."angelscript-unreal-engine-skills-for-codex@angelscript-unreal-engine-skills-for-codex"]
+[plugins."unreal-engine-skills-for-codex@unreal-engine-skills-for-codex"]
 enabled = false
 ```
 
@@ -102,20 +100,15 @@ enabled = false
 [공식 로컬 마켓플레이스 동작](https://developers.openai.com/plugins/build/plugins#how-local-marketplaces-work)과
 [항상 수행되는 사용자 활성화 설정 쓰기](https://github.com/openai/codex/blob/c7234c1174b27d9c55199fba0d546dc27d1b0415/codex-rs/core-plugins/src/manager.rs#L2307)를 참고하세요.
 
-설치 후에는 대상 에디터와 MCP 서버를 먼저 시작하세요. 수신 대기 포트가 기록된 에디터 PID, 실행 파일, 프로젝트의 것인지 확인한 다음,
-신뢰 설정이 된 대상 프로젝트에서 새 Codex 채팅을 시작하세요. 관측한 클라이언트에서는 에디터가 꺼진 상태로 채팅을 시작하면
-스킬 여섯 개는 로드되었지만 최초 MCP 핸드셰이크는 실패했습니다. 나중에 서버를 시작한 것만으로 기존 세션의 재연결이 확인되지는 않았습니다.
-실제 스킬 항목 여섯 개가 모두 제공되고, 플러그인 수명주기 훅이 0개이며, 네이티브 MCP 호출이 성공하는지 확인하세요.
-원본을 업데이트한 뒤에는 다시 설치하여 설치 캐시를 갱신하세요. 원본을 수정하거나 경로만 바꾼 것으로는 캐시 갱신이 입증되지 않습니다.
-같은 스킬의 독립된 복사본을 중복으로 추가하지 마세요.
+설치 후 에디터와 MCP 서버를 시작하고 새 채팅에서 스킬 세 개와 에디터 연결을 확인하세요. 배포본 변경 후에는 다시 설치하여 캐시를 갱신하세요.
 
 ### 선택 사항: 저장소 원본에서 설치
 
 이를 지원하는 CLI에서는 GitHub 저장소를 직접 등록할 수도 있습니다.
 
 ```sh
-codex plugin marketplace add coquid/angelscript-unreal-engine-skills-for-codex-plugin
-codex plugin add angelscript-unreal-engine-skills-for-codex@angelscript-unreal-engine-skills-for-codex
+codex plugin marketplace add coquid/unreal-engine-skills-for-codex-plugin
+codex plugin add unreal-engine-skills-for-codex@unreal-engine-skills-for-codex
 ```
 
 이 방법은 사용자 범위에 등록하고, ZIP 허용 목록을 적용하지 않은 저장소 원본을 설치합니다. 해당 체크아웃의 개발용 파일이

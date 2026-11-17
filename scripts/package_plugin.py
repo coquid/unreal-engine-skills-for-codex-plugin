@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 import zipfile
 
-from validate_plugin import ROOT, validate
+from validate_plugin import ROOT, SKILL_NAMES, validate
 
 
 def package_files(root: Path) -> list[Path]:
@@ -21,7 +21,9 @@ def package_files(root: Path) -> list[Path]:
         "docs/OPTIONAL_HOOK.ko-KR.md", "docs/VALIDATION.ko-KR.md", "docs/SANDBOX_VALIDATION.ko-KR.md",
     ]
     files = [root / name for name in names]
-    files += [p for p in (root / "skills").rglob("*") if p.is_file() and p.suffix in (".md", ".yaml")]
+    for skill in SKILL_NAMES:
+        skill_dir = root / "skills" / skill
+        files.extend(p for p in skill_dir.rglob("*") if p.is_file() and p.suffix in (".md", ".yaml"))
     for path in files:
         if not path.is_file() or path.is_symlink() or not path.resolve().is_relative_to(root.resolve()):
             raise ValueError(f"Missing or unsafe package file: {path}")

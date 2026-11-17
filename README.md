@@ -1,10 +1,10 @@
-# AngelScript Unreal Engine Skills for Codex
+# Unreal Engine MCP Skills for Codex
 
 [한국어](README.ko-KR.md)
 
 A community Codex adaptation of [Epic Games' Unreal Engine skills](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin).
 Based on [Idris173's pinned Codex port](https://github.com/Idris173/unreal-engine-skills-for-codex-plugin/commit/a6c25ac96cea4cdfb93029e31423efd109d90895),
-with three generic AngelScript skills. The three ported UE skill directories remain unchanged from that commit.
+with the three UE skill directories preserved from that commit.
 Not an official Epic Games or OpenAI release. Original MIT copyright and Git history are preserved.
 
 This plugin teaches Codex to use **Unreal Engine's official MCP server and ToolsetRegistry**.
@@ -15,15 +15,15 @@ It does not include Unreal Engine, the engine-side plugins, or a replacement MCP
 | `unreal-mcp` | Connect to, inspect, and operate a live Unreal Editor; diagnose connections |
 | `create-toolset` | Author or extend C++/Python tools registered with ToolsetRegistry |
 | `unreal-skill` | Author Unreal's in-editor Agent Skills (Python classes or UAssets) |
-| `angelscript-in-unreal` | Locate actual AngelScript bindings and implement UE gameplay safely |
-| `as-integration-tests` | Design world/PIE/latent AngelScript tests using the target project's harness |
-| `emmsui` | Build and verify AngelScript debug/editor UI using an installed EmmsUI plugin |
+
+## Migrating from the combined v0.1.0 package
+
+Uninstall `angelscript-unreal-engine-skills-for-codex@angelscript-unreal-engine-skills-for-codex` and remove its enablement entry from any project-specific config. Keep the editor MCP connection. The fork's new plugin ID is `unreal-engine-skills-for-codex`. Install the separate [UE AngelScript plugin](https://github.com/coquid/ue-angelscript-skills-for-codex-plugins) for the scripting skills.
 
 ## Requirements
 
 - A local Codex client supporting Skills and MCP; marketplace installation also requires plugin support.
 - An engine containing `ModelContextProtocol`, `ToolsetRegistry`, and the specific toolset plugins needed for the task.
-- AngelScript skills require a compatible AngelScript engine fork; EmmsUI guidance requires that separate plugin.
 - A running editor and MCP server for live operations.
 - Python **3.11+** for the optional configuration helper/development checks; manual MCP setup needs no Python.
 
@@ -39,20 +39,20 @@ See [the pinned copy implementation](https://github.com/openai/codex/blob/c7234c
 Use the package allowlist to build a ZIP, then extract it to a new, empty distribution directory:
 
 ```powershell
-$pluginRepo = 'C:\Plugins\angelscript-unreal-engine-skills-for-codex-plugin'
+$pluginRepo = 'C:\Plugins\unreal-engine-skills-for-codex-plugin'
 $packagePython = "$pluginRepo\.venv\Scripts\python.exe"
 # Prepare this isolated development environment once if it does not exist.
 python -m venv "$pluginRepo\.venv"
 & $packagePython -m pip install -r "$pluginRepo\requirements-dev.txt"
 & $packagePython "$pluginRepo\scripts\validate_plugin.py"
 & $packagePython "$pluginRepo\scripts\package_plugin.py"
-$packageZip = "$pluginRepo\dist\angelscript-unreal-engine-skills-for-codex-0.1.0.zip"
-$distributionRoot = "$pluginRepo\dist\local-plugin-0.1.0-build1"
+$packageZip = "$pluginRepo\dist\unreal-engine-skills-for-codex-0.2.0.zip"
+$distributionRoot = "$pluginRepo\dist\local-plugin-0.2.0-build1"
 if (Test-Path -LiteralPath $distributionRoot) { throw 'Choose a new distribution directory; do not merge into an old copy.' }
 Expand-Archive -LiteralPath $packageZip -DestinationPath $distributionRoot
 ```
 
-For each updated package, choose a fresh `local-plugin-<version-or-build>` directory. The ZIP contains the six skills,
+For each updated package, choose a fresh `local-plugin-<version-or-build>` directory. The ZIP contains the three UE skills,
 manifests, documentation, and runtime helpers; it excludes source-control internals, virtual environments, tests,
 and external UE project dependencies. Keep the shell in the directory required by the workspace's instructions.
 
@@ -61,11 +61,11 @@ Point `source` at the extracted distribution, not the development checkout. The 
 stays within that distribution root.
 
 ```toml
-[marketplaces.angelscript-unreal-engine-skills-for-codex]
+[marketplaces.unreal-engine-skills-for-codex]
 source_type = "local"
-source = 'C:\Plugins\angelscript-unreal-engine-skills-for-codex-plugin\dist\local-plugin-0.1.0-build1'
+source = 'C:\Plugins\unreal-engine-skills-for-codex-plugin\dist\local-plugin-0.2.0-build1'
 
-[plugins."angelscript-unreal-engine-skills-for-codex@angelscript-unreal-engine-skills-for-codex"]
+[plugins."unreal-engine-skills-for-codex@unreal-engine-skills-for-codex"]
 enabled = true
 
 [mcp_servers.unreal-mcp]
@@ -78,19 +78,19 @@ run the following CLI commands with the target project as the child process's wo
 is absent from the listing, resolve configuration/trust discovery before installing; do not treat an empty list as a pass.
 
 ```sh
-codex plugin list --marketplace angelscript-unreal-engine-skills-for-codex --json
-codex plugin add angelscript-unreal-engine-skills-for-codex@angelscript-unreal-engine-skills-for-codex --json
+codex plugin list --marketplace unreal-engine-skills-for-codex --json
+codex plugin add unreal-engine-skills-for-codex@unreal-engine-skills-for-codex --json
 ```
 
 The native desktop UI/API install is an equivalent installation operation. The desktop marketplace label is
-**AngelScript Unreal Codex**. Both the official installer and UI can write a user-level enabled setting, even when
+**Unreal Engine MCP Skills**. Both the official installer and UI can write a user-level enabled setting, even when
 the project already enables the plugin. Obtain authorization for that initial user-setting write when the workspace
 requires it. For project-only activation, set this plugin's user entry in `~/.codex/config.toml` to `enabled = false`
 after installation, while retaining `enabled = true` in the target project's config:
 
 ```toml
 # User config: disabled by default; the target project overrides this to true.
-[plugins."angelscript-unreal-engine-skills-for-codex@angelscript-unreal-engine-skills-for-codex"]
+[plugins."unreal-engine-skills-for-codex@unreal-engine-skills-for-codex"]
 enabled = false
 ```
 
@@ -100,21 +100,15 @@ authorized isolated client home can validate installation separately, but does n
 desktop session. See [official local-marketplace behavior](https://developers.openai.com/plugins/build/plugins#how-local-marketplaces-work)
 and [the unconditional user enablement write](https://github.com/openai/codex/blob/c7234c1174b27d9c55199fba0d546dc27d1b0415/codex-rs/core-plugins/src/manager.rs#L2307).
 
-After installation, start the intended editor and its MCP server first. Verify the listening port belongs to the
-recorded editor PID, executable, and project; then start a fresh Codex chat in that trusted target project. In the
-observed client, starting a chat while the editor was off loaded the six skills but failed the initial MCP handshake;
-starting the server later did not establish that the existing session had reconnected. Verify all six actual skill
-entries, zero plugin lifecycle hooks, and a successful native MCP call. Reinstall after source updates to refresh
-the installed cache; merely editing the source or switching its path does not prove the cache refreshed. Avoid a
-second standalone copy of the same skills.
+Start the editor and its MCP server before opening a new chat. Verify the three UE skills and a live MCP call. Reinstall after a package update to refresh the cache.
 
 ### Optional repository-source installation
 
 A supporting CLI can instead register the GitHub repository directly:
 
 ```sh
-codex plugin marketplace add coquid/angelscript-unreal-engine-skills-for-codex-plugin
-codex plugin add angelscript-unreal-engine-skills-for-codex@angelscript-unreal-engine-skills-for-codex
+codex plugin marketplace add coquid/unreal-engine-skills-for-codex-plugin
+codex plugin add unreal-engine-skills-for-codex@unreal-engine-skills-for-codex
 ```
 
 This registers at user scope and installs the repository source without the ZIP allowlist. Development files from

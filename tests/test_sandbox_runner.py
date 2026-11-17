@@ -2,6 +2,7 @@
 from argparse import Namespace
 from pathlib import Path
 import sys
+import os
 import tempfile
 import unittest
 from unittest.mock import Mock, patch
@@ -131,6 +132,18 @@ class SandboxOwnershipTests(unittest.TestCase):
         self.assertEqual(len(result["record_errors"]), 2)
         self.assertEqual(result["status"], "startup_failed_cleanup_incomplete")
         self.assertNotIn("stopped_at", self.state)
+
+    @unittest.skipUnless(os.name == "nt", "The editor lifecycle helper runs on Windows")
+    def test_preflight_accepts_minimal_mcp_project(self):
+        self.project.write_text('{"Plugins":[{"Name":"ModelContextProtocol","Enabled":true},'
+                                '{"Name":"ToolsetRegistry","Enabled":true}]}', encoding="utf-8")
+        self.editor.with_suffix(".modules").write_text('{"BuildId":"fixture"}', encoding="utf-8")
+        args = Namespace(project=self.project, engine=self.editor.parents[2],
+                         results=self.project.parent / "Saved/Validation", port=58241, codex_executable=None)
+        self.assertEqual(runner.preflight(args)["status"], "preflight_passed")
+        self.project.write_text('{"Plugins":[]}', encoding="utf-8")
+        with self.assertRaisesRegex(runner.RunnerError, "ModelContextProtocol, ToolsetRegistry"):
+            runner.preflight(args)
 
     def test_results_cannot_escape_project_saved(self):
         args = Namespace(project=str(self.project), engine=str(self.editor.parents[2]),

@@ -1,29 +1,28 @@
 {
 	"$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
-	"name": "angelscript-unreal-engine-skills-for-codex",
-	"version": "0.1.0",
-	"description": "Unreal Engine and AngelScript skills for Codex, preserving Epic's official MCP workflows.",
+	"name": "unreal-engine-skills-for-codex",
+	"version": "0.2.0",
+	"description": "Unreal Editor MCP and ToolsetRegistry",
 	"author": {
 		"name": "coquid",
 		"url": "https://github.com/coquid"
 	},
-	"repository": "https://github.com/coquid/angelscript-unreal-engine-skills-for-codex-plugin",
+	"repository": "https://github.com/coquid/unreal-engine-skills-for-codex-plugin",
 	"license": "MIT",
 	"keywords": [
 		"unreal-engine",
 		"codex",
 		"mcp",
 		"toolsets",
-		"skills",
-		"angelscript"
+		"skills"
 	],
 	"extensions": {
 		"com.openai": {
 			"requires_local_executor": true,
 			"interface": {
-				"displayName": "AngelScript Unreal Engine Skills for Codex",
-				"shortDescription": "Unreal MCP and AngelScript workflows",
-				"longDescription": "Epic Unreal MCP, toolset and engine Agent Skill workflows with generic AngelScript, integration testing and EmmsUI guidance. Uses a separately configured local editor connection.",
+				"displayName": "Unreal Engine MCP Skills",
+				"shortDescription": "Unreal Editor MCP and ToolsetRegistry",
+				"longDescription": "Connect to Unreal Editor through its MCP server, extend registered toolsets, and author in-editor Agent Skills.",
 				"developerName": "coquid",
 				"category": "Developer Tools",
 				"capabilities": [

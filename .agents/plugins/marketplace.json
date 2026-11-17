@@ -1,11 +1,11 @@
 {
-	"name": "angelscript-unreal-engine-skills-for-codex",
+	"name": "unreal-engine-skills-for-codex",
 	"interface": {
-		"displayName": "AngelScript Unreal Codex"
+		"displayName": "Unreal Engine MCP Skills"
 	},
 	"plugins": [
 		{
-			"name": "angelscript-unreal-engine-skills-for-codex",
+			"name": "unreal-engine-skills-for-codex",
 			"source": {
 				"source": "local",
 				"path": "./"

@@ -119,7 +119,7 @@ def preflight(args):
     project, engine, results, editor = resolve_inputs(args)
     descriptor = json.loads(project.read_text(encoding='utf-8-sig'))
     if descriptor.get('Modules'):
-        raise RunnerError('This validation profile requires a content/AS project without native game modules')
+        raise RunnerError('This validation profile requires a content-only project without native game modules')
     engine_modules = json.loads((engine / 'Binaries/Win64/UnrealEditor.modules').read_text(encoding='utf-8-sig'))
     plugin_evidence = []
     for module_file in sorted((project.parent / 'Plugins').glob('**/Binaries/Win64/UnrealEditor.modules')):
@@ -131,7 +131,7 @@ def preflight(args):
                 raise RunnerError(f'Local plugin binary is missing: {module_file.parent / binary}')
         plugin_evidence.append({'modules': str(module_file), 'build_id': modules['BuildId']})
     enabled = {item['Name'] for item in descriptor.get('Plugins', []) if item.get('Enabled')}
-    required = {'Angelscript', 'EmmsUI', 'ModelContextProtocol', 'ToolsetRegistry', 'EditorToolset', 'AutomationTestToolset', 'SlateInspectorToolset', 'PythonScriptPlugin'}
+    required = {'ModelContextProtocol', 'ToolsetRegistry'}
     if required - enabled:
         raise RunnerError('Missing required enabled plugins: ' + ', '.join(sorted(required - enabled)))
     return {
@@ -282,7 +282,6 @@ def start(args):
         run = results / token
         run.mkdir(parents=True)
         argv = [str(editor), str(project), '/Engine/Maps/Entry', '-Multiprocess',
-                '-as-development-mode', '-as-exit-on-error', '-as-skip-write-bind-db', '-asdebugport=0',
                 '-ini:EditorPerProjectUserSettings:[/Script/ModelContextProtocolEngine.ModelContextProtocolSettings]:bAutoStartServer=False',
                 '-ini:Engine:[/Script/PythonScriptPlugin.PythonScriptPluginSettings]:bRemoteExecution=False',
                 '-ini:EditorPerProjectUserSettings:[/Script/UnrealEd.EditorLoadingSavingSettings]:RestoreOpenAssetTabsOnRestart=NeverRestore',

@@ -12,6 +12,11 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 
 
+SKILL_NAMES = {
+    "unreal-mcp", "create-toolset", "unreal-skill",
+}
+
+
 def validate(root: Path = ROOT) -> list[str]:
     errors = []
     try:
@@ -33,7 +38,7 @@ def validate(root: Path = ROOT) -> list[str]:
         if compatibility.get("skills") != "./skills/":
             errors.append("Compatibility skills path must point to ./skills/")
         entries = marketplace["plugins"]
-        if len(entries) != 1 or entries[0]["name"] != portable["name"]:
+        if marketplace["name"] != portable["name"] or len(entries) != 1 or entries[0]["name"] != portable["name"]:
             errors.append("Marketplace must reference this plugin exactly once")
         if entries[0]["source"] != {"source": "local", "path": "./"}:
             errors.append("Marketplace must resolve the package root")
@@ -43,13 +48,9 @@ def validate(root: Path = ROOT) -> list[str]:
     except (OSError, ValueError, KeyError, TypeError) as error:
         errors.append(f"Manifest error: {error}")
 
-    expected = {
-        "unreal-mcp", "create-toolset", "unreal-skill",
-        "angelscript-in-unreal", "as-integration-tests", "emmsui",
-    }
     paths = list((root / "skills").glob("*/SKILL.md"))
-    if {path.parent.name for path in paths} != expected:
-        errors.append("Package must contain the three adapted upstream and three AngelScript skills")
+    if {path.parent.name for path in paths} != SKILL_NAMES:
+        errors.append("Package must contain the three Unreal MCP skills")
     for path in paths:
         try:
             text = path.read_text(encoding="utf-8")

@@ -23,8 +23,7 @@ class PackageTests(unittest.TestCase):
                 self.assertIn("scripts/configure_mcp.py", names)
                 self.assertEqual(
                     {Path(n).parent.name for n in names if n.endswith("/SKILL.md")},
-                    {"unreal-mcp", "create-toolset", "unreal-skill",
-                     "angelscript-in-unreal", "as-integration-tests", "emmsui"},
+                    {"unreal-mcp", "create-toolset", "unreal-skill"},
                 )
                 self.assertIn("scripts/sandbox_runner.py", names)
                 for name in names:

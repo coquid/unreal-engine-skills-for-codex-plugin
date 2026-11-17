@@ -6,14 +6,12 @@
 
 | 역할 | 저장소 | 기준 버전 |
 | --- | --- | --- |
-| `upstream` | [Epic Games 원본](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin) | `a6aa73ada02a9fb1f5415bec491f9942c519b297` (3.1.1) |
+| `upstream` | [Epic Games 원본](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin) | `0e27bde2b55c5d3f6948532f4296aaa3654d8f4b` (3.1.2) |
 | `port-origin` | [Idris173 Codex 포팅 버전](https://github.com/Idris173/unreal-engine-skills-for-codex-plugin) | `a6c25ac96cea4cdfb93029e31423efd109d90895` |
 | `origin` | [coquid 포크](https://github.com/coquid/unreal-engine-skills-for-codex-plugin) | 이 저장소 |
 
-Idris 기준 버전에는 Epic 기준 버전 이후의 커밋 `5378fdf`와 `a6c25ac`가 포함되어 있습니다. 이 이력은 그대로 병합되어 있습니다.
-mazelines 포크의 내용은 가져오지 않았습니다. `create-toolset`, `unreal-mcp`, `unreal-skill` 디렉터리는 고정된 Idris 트리에서 변경하지 않았습니다.
-Epic에서 Idris로의 전환 과정에서는 해당 작업 절차를 Codex에 맞게 조정했습니다.
-따라서 이 포크의 파일이 Epic 원본과 바이트 단위로 동일하다는 뜻은 아닙니다.
+Idris 포팅본은 Epic 3.1.1(`a6aa73a`)에서 분기했으며, 포팅 커밋 `5378fdf`와 `a6c25ac`는 이 포크의 이력에 포함되어 있습니다.
+`create-toolset`과 `unreal-skill`은 고정된 포팅본과 같습니다. `unreal-mcp` 참조 문서에는 Epic 3.1.2의 워크스페이스별 포트 할당과 응답 에디터 식별 방법을 Codex 프로젝트 설정에 맞게 반영했습니다.
 
 분리 기준은 [통합판 커밋 9937d3deeb10e362a7443d849048a9bcd4da7605](https://github.com/coquid/unreal-engine-skills-for-codex-plugin/blob/9937d3deeb10e362a7443d849048a9bcd4da7605/UPSTREAM.md)입니다. AngelScript 워크플로는 [독립 저장소](https://github.com/coquid/ue-angelscript-skills-for-codex-plugins)에서 관리합니다. 이 포크는 UE MCP 스킬, 연결 설정, 검증 도우미와 Epic의 [MIT 고지](LICENSE)를 유지합니다.
 

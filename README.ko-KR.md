@@ -4,7 +4,7 @@
 
 [Epic Games의 Unreal Engine 스킬](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin)을 Codex에 맞게 조정한 커뮤니티 프로젝트입니다.
 [Idris173의 고정된 Codex 포팅 버전](https://github.com/Idris173/unreal-engine-skills-for-codex-plugin/commit/a6c25ac96cea4cdfb93029e31423efd109d90895)을 바탕으로
-UE 스킬 세 개와 에디터 연결 도구를 제공합니다.
+UE 스킬 세 개와 에디터 연결 도구를 제공하며, Epic 3.1.2의 다중 에디터 설정 및 식별 방법을 반영했습니다.
 Epic Games나 OpenAI의 공식 배포판이 아닙니다. 원본 MIT 저작권 고지와 Git 이력을 보존합니다.
 
 이 플러그인은 Codex가 **Unreal Engine의 공식 MCP 서버와 ToolsetRegistry**를 사용하는 방법을 안내합니다.
@@ -47,8 +47,8 @@ python -m venv "$pluginRepo\.venv"
 & $packagePython -m pip install -r "$pluginRepo\requirements-dev.txt"
 & $packagePython "$pluginRepo\scripts\validate_plugin.py"
 & $packagePython "$pluginRepo\scripts\package_plugin.py"
-$packageZip = "$pluginRepo\dist\unreal-engine-skills-for-codex-0.2.0.zip"
-$distributionRoot = "$pluginRepo\dist\local-plugin-0.2.0-build1"
+$packageZip = "$pluginRepo\dist\unreal-engine-skills-for-codex-0.2.1.zip"
+$distributionRoot = "$pluginRepo\dist\local-plugin-0.2.1-build1"
 if (Test-Path -LiteralPath $distributionRoot) { throw 'Choose a new distribution directory; do not merge into an old copy.' }
 Expand-Archive -LiteralPath $packageZip -DestinationPath $distributionRoot
 ```
@@ -63,7 +63,7 @@ Expand-Archive -LiteralPath $packageZip -DestinationPath $distributionRoot
 ```toml
 [marketplaces.unreal-engine-skills-for-codex]
 source_type = "local"
-source = 'C:\Plugins\unreal-engine-skills-for-codex-plugin\dist\local-plugin-0.2.0-build1'
+source = 'C:\Plugins\unreal-engine-skills-for-codex-plugin\dist\local-plugin-0.2.1-build1'
 
 [plugins."unreal-engine-skills-for-codex@unreal-engine-skills-for-codex"]
 enabled = true

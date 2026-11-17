@@ -50,12 +50,20 @@ Proxy behavior is engine-build dependent; this adaptation has not validated a Co
 
 Inspect proxy stderr, the server startup log, and the configured upstream endpoint if calls still fail. Do not add a second direct connection as an implicit proxy recovery step, and never pass a TOML config to a JSON-only installer.
 
+## Identify the editor
+
+Before changing an asset with several editors open, confirm the project behind the session's connection.
+
+- On builds that expose instance metadata, inspect `_meta["com.epicgames.unrealengine/instance"]` in the MCP `initialize` result, or in `server/discover` when using protocol `2026-07-28`. Compare `projectFile`, `projectDirectory` or `engineDirectory` with the intended workspace. The record also includes `processId`, `projectName`, `engineVersion`, `engineBranch` and `engineChangelist`.
+- A separate probe can reach the intended endpoint even while a running Codex session uses an older configuration. If the session advertises `execute_python`, use it to run `import os` followed by `print(os.getpid())` in the editor. Compare the returned PID with the instance's `processId`.
+- For builds or clients that do not expose the metadata, find the process listening on the configured port. Check its executable and project command line, especially when multiple projects use the same engine binary. A PID returned through the session can also be compared with that port owner.
+
 ## Troubleshooting
 
 | Symptom | Next check |
 | --- | --- |
 | No Unreal tools | Inspect loaded server names, config scopes, project trust, endpoint, and the editor log. Server names may be customized. Distinguish search mode, a native catalog, and proxy status-only mode before diagnosing a stopped editor. |
-| "Failed to listen on port" | Identify the port owner. Choose an available port with the authorized server settings, then update the existing Codex URL. Do not stop an unrelated service. |
+| "Failed to listen on port" | Identify the port owner. [Assign each workspace a fixed port](setup.md#5-run-several-editors-at-once) and update its existing Codex URL. Do not stop an unrelated service. |
 | Expected toolset is missing | Confirm its plugin exists and is enabled in this engine/project. Refresh registration; honor plugin restart requirements. Do not infer availability from another UE build. |
 | Calls hang or fail | Check compilation, level loading, and PIE. Wait for a known in-progress operation, inspect errors, then retry only when state changed. Discover Live Coding support before using it. |
 | Live Coding unavailable or insufficient | Use the project's supported build workflow. Coordinate any needed editor restart and preserve unsaved work. |

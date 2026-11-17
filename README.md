@@ -4,7 +4,7 @@
 
 A community Codex adaptation of [Epic Games' Unreal Engine skills](https://github.com/EpicGames/unreal-engine-skills-for-claude-code-plugin).
 Based on [Idris173's pinned Codex port](https://github.com/Idris173/unreal-engine-skills-for-codex-plugin/commit/a6c25ac96cea4cdfb93029e31423efd109d90895),
-with the three UE skill directories preserved from that commit.
+with Epic 3.1.2 multi-editor setup and identification guidance adapted for Codex.
 Not an official Epic Games or OpenAI release. Original MIT copyright and Git history are preserved.
 
 This plugin teaches Codex to use **Unreal Engine's official MCP server and ToolsetRegistry**.
@@ -46,8 +46,8 @@ python -m venv "$pluginRepo\.venv"
 & $packagePython -m pip install -r "$pluginRepo\requirements-dev.txt"
 & $packagePython "$pluginRepo\scripts\validate_plugin.py"
 & $packagePython "$pluginRepo\scripts\package_plugin.py"
-$packageZip = "$pluginRepo\dist\unreal-engine-skills-for-codex-0.2.0.zip"
-$distributionRoot = "$pluginRepo\dist\local-plugin-0.2.0-build1"
+$packageZip = "$pluginRepo\dist\unreal-engine-skills-for-codex-0.2.1.zip"
+$distributionRoot = "$pluginRepo\dist\local-plugin-0.2.1-build1"
 if (Test-Path -LiteralPath $distributionRoot) { throw 'Choose a new distribution directory; do not merge into an old copy.' }
 Expand-Archive -LiteralPath $packageZip -DestinationPath $distributionRoot
 ```
@@ -63,7 +63,7 @@ stays within that distribution root.
 ```toml
 [marketplaces.unreal-engine-skills-for-codex]
 source_type = "local"
-source = 'C:\Plugins\unreal-engine-skills-for-codex-plugin\dist\local-plugin-0.2.0-build1'
+source = 'C:\Plugins\unreal-engine-skills-for-codex-plugin\dist\local-plugin-0.2.1-build1'
 
 [plugins."unreal-engine-skills-for-codex@unreal-engine-skills-for-codex"]
 enabled = true

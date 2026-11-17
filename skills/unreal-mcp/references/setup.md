@@ -109,6 +109,14 @@ Before installing a proxy for Codex, read that build's `Extras/Proxy/README.md` 
 
 Do not register both a proxy and a duplicate direct connection. A proxy maintains a client session while the editor is unavailable; live editor operations still require Unreal to be reachable.
 
+## 5. Run several editors at once
+
+Every editor uses port 8000 by default. If a second editor fails to bind it, a Codex session using that port can still receive valid responses from the first editor.
+
+1. Assign a stable loopback port to each workspace, for example 8100 and 8101. Set `ServerPortNumber` under the section in step 2 of that project's per-user INI, or pass `-ModelContextProtocolPort=<port>` at launch.
+2. In each trusted workspace's `.codex/config.toml`, set the existing `mcp_servers.unreal-mcp` URL to that editor's port. For example, the workspace for port 8101 uses `http://127.0.0.1:8101/mcp`. For an existing proxy, check its workspace-specific upstream endpoint.
+3. Open each Codex session in the corresponding workspace. After a port change or editor restart, [identify the editor](operations.md#identify-the-editor) through that session before editing.
+
 ## Verify the actual connection
 
 - The Unreal Output Log shows a successful server startup at the intended endpoint.
